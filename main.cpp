@@ -76,7 +76,7 @@ private:
     double xSpeed, ySpeed;
 public:
     Ball(int startX, int startY)
-            : x(startX), y(startY), xSpeed(.1), ySpeed(1) {}
+            : x(startX), y(startY), xSpeed(1), ySpeed(1) {}
 
     int getX() const
     {
@@ -115,7 +115,7 @@ private:
     HANDLE hConsole;
 public:
     Game(int height, int width) :
-            screenHeight(height), screenWidth(width),
+            screenWidth(width), screenHeight(height),
             player1(1, height / 2 - 3, 1, 6),
             player2(width - 2, height / 2 - 3, 1, 6),
             ball(width / 2, height / 2),
