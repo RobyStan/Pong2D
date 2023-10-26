@@ -72,7 +72,7 @@ public:
 class Ball
 {
 private:
-    int x, y;
+    double x, y;
     double xSpeed, ySpeed;
 public:
     Ball(int startX, int startY)
@@ -112,14 +112,12 @@ private:
     int screenWidth, screenHeight;
     Paddle player1, player2;
     Ball ball;
-    HANDLE hConsole;
 public:
     Game(int height, int width) :
             screenWidth(width), screenHeight(height),
             player1(1, height / 2 - 3, 1, 6),
             player2(width - 2, height / 2 - 3, 1, 6),
-            ball(width / 2, height / 2),
-            hConsole(GetStdHandle(STD_OUTPUT_HANDLE)) {}
+            ball(width / 2, height / 2) {}
 
     friend std::ostream& operator<<(std::ostream& os, const Game& pingPongGame);
 
@@ -182,8 +180,7 @@ public:
 
     void render()
     {
-        COORD coord = {0, 0};
-        SetConsoleCursorPosition(hConsole, coord);
+        rlutil::locate(1, 1);
 
         for (int i = -1; i <= screenHeight ; i++)
         {
@@ -251,13 +248,7 @@ std::ostream& operator<<(std::ostream& os, const Game& game)
 
 int main()
 {
-    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-
-    CONSOLE_CURSOR_INFO cursorInfo;
-    GetConsoleCursorInfo(consoleHandle, &cursorInfo);
-    cursorInfo.bVisible = false;
-    SetConsoleCursorInfo(consoleHandle, &cursorInfo);
-
+    rlutil::hidecursor();
     GameStatus status = START;
 
     while (status == START)
