@@ -146,7 +146,7 @@ public:
                 {
                     player2.moveDown(screenHeight);
                 }
-                if(GetAsyncKeyState('Q'))
+                if(key == 'q' || key == 'Q')
                 {
                     break;
                 }
@@ -221,8 +221,8 @@ void instructions()
     std::cout << "2 - Stop the game"<<std::endl;
     std::cout << "Q - To exit while in game "<<std::endl;
     std::cout << "---How to play---"<<std::endl;
-    std::cout << "Player 1 (left) -> w - go up / s - go down"<<std::endl;
-    std::cout << "Player 2 (right) -> up arrow - go up / down arrow - go down"<<std::endl;
+    std::cout << "Player 1 (left): w -> go up / s -> go down"<<std::endl;
+    std::cout << "Player 2 (right): up arrow -> go up / down arrow -> go down"<<std::endl;
     std::cout << "Enter option: ";
 }
 
