@@ -129,19 +129,20 @@ public:
         {
             if (kbhit())
             {
-                if (GetAsyncKeyState('W'))
+                int key = rlutil::getkey();
+                if (key == 'w' || key == 'W')
                 {
                     player1.moveUp();
                 }
-                if (GetAsyncKeyState('S'))
+                if (key == 's' || key == 'S')
                 {
                     player1.moveDown(screenHeight);
                 }
-                if (GetAsyncKeyState(VK_UP))
+                if (key == rlutil::KEY_UP)
                 {
                     player2.moveUp();
                 }
-                if (GetAsyncKeyState(VK_DOWN))
+                if (key == rlutil::KEY_DOWN)
                 {
                     player2.moveDown(screenHeight);
                 }
