@@ -4,7 +4,7 @@
 enum GameStatus
 {
     START = 1,
-    QUIT = 2,
+    QUIT = 2
 };
 
 class Paddle
