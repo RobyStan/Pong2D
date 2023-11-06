@@ -103,6 +103,11 @@ public:
         ySpeed = -ySpeed;
     }
 
+    bool isWithin(int minY, int maxY)
+    {
+        return (y < minY || y > maxY);
+    }
+
     friend std::ostream& operator<<(std::ostream& os, const Ball& ball);
 };
 
@@ -127,24 +132,24 @@ public:
         {
             if (kbhit())
             {
-                int key = rlutil::getkey();
-                if (key == 'w' || key == 'W')
+                int key = std::tolower(rlutil::getkey());
+                if (key == 'w')
                 {
                     player1.moveUp();
                 }
-                if (key == 's' || key == 'S')
+                if (key == 's')
                 {
                     player1.moveDown(screenHeight);
                 }
-                if (key == rlutil::KEY_UP)
+                if (key == 'i')
                 {
                     player2.moveUp();
                 }
-                if (key == rlutil::KEY_DOWN)
+                if (key == 'j')
                 {
                     player2.moveDown(screenHeight);
                 }
-                if(key == 'q' || key == 'Q')
+                if(key == 'q')
                 {
                     break;
                 }
@@ -152,7 +157,7 @@ public:
 
             ball.update();
 
-            if (ball.getY() == 0 || ball.getY() == screenHeight - 1 )
+            if (ball.isWithin(0, screenHeight - 1))
             {
                 ball.reverseY();
             }
@@ -219,7 +224,7 @@ void instructions()
     std::cout << "Q - To exit while in game "<<std::endl;
     std::cout << "---How to play---"<<std::endl;
     std::cout << "Player 1 (left): w -> go up / s -> go down"<<std::endl;
-    std::cout << "Player 2 (right): up arrow -> go up / down arrow -> go down"<<std::endl;
+    std::cout << "Player 2 (right): i -> go up / j -> go down"<<std::endl;
     std::cout << "Enter option: ";
 }
 
@@ -254,14 +259,14 @@ int main()
     while (status == START)
     {
         instructions();
-        int choice;
+        char choice;
         std::cin >> choice;
 
-        if (choice == 2)
+        if (choice == '2')
         {
             status = QUIT;
         }
-        else if (choice == 1)
+        else if (choice == '1')
         {
             Game pingPongGame(28, 80);
             pingPongGame.run();
@@ -272,5 +277,6 @@ int main()
         }
     }
 
+    rlutil::showcursor();
     return 0;
 }
