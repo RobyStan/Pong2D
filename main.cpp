@@ -118,13 +118,33 @@ private:
     Paddle player1, player2;
     Ball ball;
 public:
-    Game(int height, int width) :
+    Game(int width, int height) :
             screenWidth(width), screenHeight(height),
-            player1(1, height / 2 - 3, 1, 6),
-            player2(width - 2, height / 2 - 3, 1, 6),
-            ball(width / 2, height / 2) {}
+            player1(1, screenHeight / 2 - 3, 1, 6),
+            player2(screenWidth - 2, screenHeight / 2 - 3, 1, 6),
+            ball(screenWidth / 2, screenHeight / 2)
+    {
+        rlutil::hidecursor();
+    }
 
-    friend std::ostream& operator<<(std::ostream& os, const Game& pingPongGame);
+    friend std::ostream &operator<<(std::ostream &os, const Game &pingPongGame);
+
+    void handlePaddleCollisions(const Paddle &paddle, Ball &ball)
+    {
+        if (ball.getX() == paddle.getX() && ball.getY() >= paddle.getY() &&
+            ball.getY() < paddle.getY() + paddle.getHeight())
+        {
+            ball.reverseX();
+        }
+    }
+
+    void resetGame()
+    {
+        ball = Ball(screenWidth / 2, screenHeight / 2);
+        player1 = Paddle(1, screenHeight / 2 - 3, 1, 6);
+        player2 = Paddle(screenWidth - 2, screenHeight / 2 - 3, 1, 6);
+    }
+
 
     void run()
     {
@@ -149,7 +169,7 @@ public:
                 {
                     player2.moveDown(screenHeight);
                 }
-                if(key == 'q')
+                if (key == 'q')
                 {
                     break;
                 }
@@ -162,57 +182,64 @@ public:
                 ball.reverseY();
             }
 
-            if (ball.getX() == player1.getX() + 1 && ball.getY() >= player1.getY() && ball.getY() < player1.getY() + player1.getHeight())
-            {
-                ball.reverseX();
-            }
+            handlePaddleCollisions(player1, ball);
+            handlePaddleCollisions(player2, ball);
 
-            if (ball.getX() == player2.getX() - 1 && ball.getY() >= player2.getY() && ball.getY() < player2.getY() + player2.getHeight())
+            if (ball.getX() < 0 || ball.getX() >= screenWidth - 1)
             {
-                ball.reverseX();
-            }
-
-            if (ball.getX() == 0 || ball.getX() == screenWidth - 1)
-            {
-                ball = Ball(screenWidth / 2, screenHeight / 2);
-                player1 = Paddle(1, screenHeight / 2 - 3, 1, 6);
-                player2 = Paddle(screenWidth - 2, screenHeight / 2 - 3, 1, 6);
+                resetGame();
             }
 
             render();
         }
     }
 
+    void renderBorder(int row)
+    {
+        for (int j = 0; j < screenWidth; j++)
+        {
+            if (row == -1 || row == screenHeight)
+            {
+                std::cout << "~";
+            }
+            else
+            {
+                renderGameElements(row, j);
+            }
+        }
+        std::cout << std::endl;
+    }
+
+    void renderGameElements(int row, int col)
+    {
+        if ((col == player1.getX() || col == player1.getX() + player1.getWidth() - 1) &&
+            (row >= player1.getY() && row < player1.getY() + player1.getHeight()))
+        {
+            std::cout << "|";
+        }
+        else if ((col == player2.getX() || col == player2.getX() + player2.getWidth() - 1) &&
+                 (row >= player2.getY() && row < player2.getY() + player2.getHeight()))
+        {
+            std::cout << "|";
+        }
+        else if (col == ball.getX() && row == ball.getY())
+        {
+            std::cout << "O";
+        }
+        else
+        {
+            std::cout << " ";
+        }
+    }
+
     void render()
     {
+        rlutil::msleep(40);
         rlutil::locate(1, 1);
 
-        for (int i = -1; i <= screenHeight ; i++)
+        for (int i = -1; i <= screenHeight; i++)
         {
-            for (int j = 0; j < screenWidth; j++)
-            {
-                if (i == -1 || i == screenHeight)
-                {
-                    std::cout << "~";
-                }
-                else if ((j == player1.getX() || j == player1.getX() + player1.getWidth() - 1) && (i>= player1.getY() && i < player1.getY() + player1.getHeight()))
-                {
-                    std::cout << "|";
-                }
-                else if ((j == player2.getX() || j == player2.getX() + player2.getWidth() - 1) && (i >= player2.getY() && i < player2.getY() + player2.getHeight()))
-                {
-                    std::cout << "|";
-                }
-                else if (j == ball.getX() && i == ball.getY())
-                {
-                    std::cout << "O";
-                }
-                else
-                {
-                    std::cout << " ";
-                }
-            }
-            std::cout << std::endl;
+            renderBorder(i);
         }
     }
 };
@@ -226,6 +253,7 @@ void instructions()
     std::cout << "Player 1 (left): w -> go up / s -> go down"<<std::endl;
     std::cout << "Player 2 (right): i -> go up / j -> go down"<<std::endl;
     std::cout << "Enter option: ";
+    rlutil::hidecursor();
 }
 
 std::ostream& operator<<(std::ostream& os, const Paddle& paddle)
@@ -253,7 +281,6 @@ std::ostream& operator<<(std::ostream& os, const Game& game)
 
 int main()
 {
-    rlutil::hidecursor();
     GameStatus status = START;
 
     while (status == START)
@@ -268,7 +295,7 @@ int main()
         }
         else if (choice == '1')
         {
-            Game pingPongGame(28, 80);
+            Game pingPongGame(rlutil::tcols() - 2,rlutil::trows() - 3);
             pingPongGame.run();
         }
         else
