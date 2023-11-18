@@ -129,9 +129,9 @@ public:
 
     friend std::ostream &operator<<(std::ostream &os, const Game &pingPongGame);
 
-    void handlePaddleCollisions(const Paddle &paddle, Ball &ball)
+        void handlePaddleCollisions(const Paddle &paddle, Ball &gameBall)
     {
-        if (ball.getX() == paddle.getX() && ball.getY() >= paddle.getY() &&
+        if (gameBall.getX() == paddle.getX() && ball.getY() >= paddle.getY() &&
             ball.getY() < paddle.getY() + paddle.getHeight())
         {
             ball.reverseX();
