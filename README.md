@@ -1,6 +1,10 @@
 # Pong
 #### Ping Pong 2D. Scopul jocului este acela de a nu lăsa mingea să treacă de paletă
 
+## Known Bugs
+### Bug la Coliziuni în Colțuri
+- Dacă mingea ajunge fix în colț este imposibil de lovit
+
 ### Tema 0
 
 - [x] Nume proiect (poate fi schimbat ulterior)
