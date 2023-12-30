@@ -4,24 +4,25 @@
 
 #include "Ball.h"
 
-Ball::Ball(int startX, int startY)
-        : x(startX), y(startY), xSpeed(1), ySpeed(1) {}
+Ball::Ball(int startX, int startY, double xSpeed, double ySpeed)
+        : GameObject(startX, startY), xSpeed(xSpeed), ySpeed(ySpeed) {}
 
-std::ostream& operator<<(std::ostream& os, const Ball& ball)
+
+Ball::Ball(const Ball &other)
+        : GameObject(other), xSpeed(other.xSpeed), ySpeed(other.ySpeed) {}
+
+Ball &Ball::operator=(const Ball &other)
 {
-    os << "Ball position (x, y): (" << ball.x << ", " << ball.y << ")\n";
-    os << "Ball speed(x_speed, y_speed): (" <<ball.xSpeed << ", " << ball.ySpeed << ")\n";
-    return os;
+    if (this != &other) {
+        GameObject::operator=(other);
+        xSpeed = other.xSpeed;
+        ySpeed = other.ySpeed;
+    }
+    return *this;
 }
 
-int Ball::getX() const
-{
-    return x;
-}
-int Ball::getY() const
-{
-    return y;
-}
+
+Ball::~Ball() {}
 
 void Ball::update()
 {
@@ -30,8 +31,6 @@ void Ball::update()
 }
 
 void Ball::reverseX()
-
-
 {
     xSpeed = -xSpeed;
 }
@@ -43,5 +42,17 @@ void Ball::reverseY()
 
 bool Ball::isWithin(int minY, int maxY)
 {
-    return (y < minY || y > maxY);
+    return (y <= minY || y >= maxY);
 }
+
+char Ball::getSymbol() const {
+    return 'O';
+}
+
+void Ball::performAction(double speed) {
+    xSpeed += speed;
+    ySpeed += speed;
+}
+
+
+

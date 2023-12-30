@@ -1,38 +1,34 @@
-//
-// Created by Roby on 12/2/2023.
-//
+// Game.h
 
 #ifndef OOP_GAME_H
 #define OOP_GAME_H
 
+#include "Border.h"
 #include "Paddle.h"
 #include "Ball.h"
-#include "iostream"
+#include "GameObject.h"
 #include "rlutil.h"
+#include <vector>
 
-class Game
-{
+class Game {
 private:
     int screenWidth, screenHeight;
     Paddle player1, player2;
     Ball ball;
+    Border topAndBottomBorder;
+    std::vector<GameObject *> gameObjects;
+
 public:
-    Game(int width, int height);
+    Game(int width, int height, Border topAndBottomBorder);
 
-    friend std::ostream &operator<<(std::ostream &os, const Game &pingPongGame);
+    ~Game();
 
-    void handlePaddleCollisions(const Paddle &paddle, const Ball &gameBall);
-
+    void handlePaddleCollisions(const Paddle &paddle, Ball &gameBall);
     void resetGame();
-
     void run();
-
     void renderBorder(int row);
-
     void renderGameElements(int row, int col);
-
     void render();
 };
 
-
-#endif //OOP_GAME_H
+#endif // OOP_GAME_H

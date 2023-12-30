@@ -96,7 +96,11 @@ add_executable(${PROJECT_NAME} main.cpp
         Ball.cpp
         Ball.h
         Game.cpp
-        Game.h)
+        Game.h
+        GameObject.h
+        GameObject.cpp
+        Border.cpp
+        Border.h)
 
 ###############################################################################
 

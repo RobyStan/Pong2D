@@ -14,6 +14,7 @@ void instructions()
     std::cout << "---How to play---"<<std::endl;
     std::cout << "Player 1 (left): w -> go up / s -> go down"<<std::endl;
     std::cout << "Player 2 (right): i -> go up / j -> go down"<<std::endl;
+    std::cout << "Increase/Decrease ball speed: + / -" << std::endl;
     std::cout << "Enter option: ";
     rlutil::hidecursor();
 }
@@ -34,7 +35,7 @@ int main()
         }
         else if (choice == '1')
         {
-            Game pingPongGame(rlutil::tcols() - 2,rlutil::trows() - 3);
+            Game pingPongGame(rlutil::tcols() - 2, rlutil::trows() - 3, Border(0, 0, 0, 0));
             pingPongGame.run();
         }
         else

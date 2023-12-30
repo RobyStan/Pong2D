@@ -5,14 +5,13 @@
 #ifndef OOP_PADDLE_H
 #define OOP_PADDLE_H
 
-#include "iostream"
+#include "GameObject.h"
 
-
-class Paddle
+class Paddle : public GameObject
 {
 private:
-    int x, y;
     int width, height;
+
 public:
     Paddle(int startX, int startY, int paddleWidth, int paddleHeight);
 
@@ -20,21 +19,18 @@ public:
 
     Paddle& operator=(const Paddle& other);
 
-    ~Paddle();
+    ~Paddle() override;
 
-    friend std::ostream& operator<<(std::ostream& os, const Paddle& paddle);
+    int getPaddleWidth() const;
 
-    int getX() const;
-
-    int getY() const;
-
-    int getWidth() const;
-
-    int getHeight() const;
+    int getPaddleHeight() const;
 
     void moveUp();
 
     void moveDown(int screenHeight);
+
+    char getSymbol() const override;
+
 };
 
 #endif //OOP_PADDLE_H

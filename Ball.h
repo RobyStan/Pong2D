@@ -5,21 +5,24 @@
 #ifndef OOP_BALL_H
 #define OOP_BALL_H
 
-#include "iostream"
+#include "GameObject.h"
 
-class Ball
+class Ball : public GameObject
 {
 private:
-    double x, y;
+
     double xSpeed, ySpeed;
+
 public:
-    Ball(int startX, int startY);
+    Ball(int startX, int startY, double xSpeed, double ySpeed);
 
-    int getX() const;
+    Ball(const Ball &other);
 
-    int getY() const;
+    Ball &operator=(const Ball &other);
 
-    void update();
+    ~Ball() override;
+
+    void update() override;
 
     void reverseX();
 
@@ -27,8 +30,10 @@ public:
 
     bool isWithin(int minY, int maxY);
 
-    friend std::ostream& operator<<(std::ostream& os, const Ball& ball);
-};
+    char getSymbol() const override;
 
+    void performAction(double speed);
+
+};
 
 #endif //OOP_BALL_H
