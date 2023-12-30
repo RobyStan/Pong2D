@@ -31,14 +31,6 @@ void GameObject::update() {
     // do nothing
 }
 
-int GameObject::getWidth() {
-    return 1;
-}
-
-int GameObject::getHeight() {
-    return 6;
-}
-
 void GameObject::performAction() {
     // Default implementation, do nothing
 }

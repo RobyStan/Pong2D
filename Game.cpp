@@ -73,7 +73,7 @@ void Game::run() {
             obj->update();
         }
 
-        if (ball.getY() <= 0 || ball.getY() >= screenHeight - 1) {
+        if (ball.isWithin(0, screenHeight - 1)) {
             ball.reverseY();
         }
 

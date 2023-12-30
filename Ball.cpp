@@ -5,7 +5,7 @@
 #include "Ball.h"
 
 Ball::Ball(int startX, int startY, double xSpeed, double ySpeed)
-        : GameObject(startX, startY), xSpeed(xSpeed), ySpeed(ySpeed) {}
+        : GameObject(startX, startY), xSpeed(1), ySpeed(0) {}
 
 
 Ball::Ball(const Ball &other)
