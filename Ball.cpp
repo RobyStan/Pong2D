@@ -4,8 +4,8 @@
 
 #include "Ball.h"
 
-Ball::Ball(int startX, int startY, double xSpeed, double ySpeed)
-        : GameObject(startX, startY), xSpeed(1), ySpeed(0) {}
+Ball::Ball(int startX, int startY, double, double)
+        : GameObject(startX, startY), xSpeed(1), ySpeed(1) {}
 
 
 Ball::Ball(const Ball &other)
@@ -49,9 +49,9 @@ char Ball::getSymbol() const {
     return 'O';
 }
 
-void Ball::performAction(double speed) {
-    xSpeed += speed;
-    ySpeed += speed;
+void Ball::performAction() {
+    xSpeed += 0.2;
+    ySpeed += -0.2;
 }
 
 

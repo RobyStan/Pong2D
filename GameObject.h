@@ -26,12 +26,7 @@ public:
 
     virtual int getY() const;
 
-
-    int getWidth();
-
-    int getHeight();
-
-    virtual void performAction();
+    virtual void performAction() = 0;
 
 };
 

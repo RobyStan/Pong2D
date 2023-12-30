@@ -62,10 +62,10 @@ void Game::run() {
                 break;
             }
             if (key == '=') {
-                ball.performAction(0.2);
+                ball.performAction();
             }
             if (key == '-') {
-                ball.performAction(-0.2);
+                ball.performAction();
             }
         }
 

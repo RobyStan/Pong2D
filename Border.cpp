@@ -24,3 +24,7 @@ Border::~Border() {};
 char Border::getSymbol() const {
     return '~';
 }
+
+void Border::performAction() {
+    // do nothing
+}

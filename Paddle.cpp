@@ -44,3 +44,7 @@ void Paddle::moveDown(int screenHeight) {
 char Paddle::getSymbol() const {
     return '|';
 }
+
+void Paddle::performAction() {
+    // do nothing
+}

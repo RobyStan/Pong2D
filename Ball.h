@@ -32,7 +32,7 @@ public:
 
     char getSymbol() const override;
 
-    void performAction(double speed);
+    void performAction() override;
 
 };
 

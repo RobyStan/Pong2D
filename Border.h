@@ -22,6 +22,8 @@ public:
 
     char getSymbol() const override;
 
+    void performAction() override;
+
 };
 
 #endif //OOP_BORDER_H

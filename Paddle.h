@@ -31,6 +31,8 @@ public:
 
     char getSymbol() const override;
 
+    void performAction() override;
+
 };
 
 #endif //OOP_PADDLE_H
