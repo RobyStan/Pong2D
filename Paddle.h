@@ -33,7 +33,7 @@ public:
 
     void performAction(char) override;
 
-    [[nodiscard]] GameObject *clone() const override;
+    GameObject *clone() const override;
 
 };
 

@@ -49,6 +49,7 @@ void Paddle::performAction(char) {
     // do nothing
 }
 
-[[nodiscard]] GameObject *Paddle::clone() const {
+
+GameObject *Paddle::clone() const {
     return new Paddle(*this);
 }
