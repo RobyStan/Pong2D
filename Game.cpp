@@ -171,7 +171,7 @@ void Game::renderGameElements(int row, int col) {
 }
 
 void Game::render() {
-    // rlutil::msleep(40);
+    rlutil::msleep(40);
     rlutil::locate(1, 1);
     std::cout << "Player 1 Score: " << getPlayer1Score() << " | Player 2 Score: " << getPlayer2Score() << std::endl;
 

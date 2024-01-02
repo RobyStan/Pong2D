@@ -45,7 +45,7 @@ char Paddle::getSymbol() const {
     return '|';
 }
 
-void Paddle::performAction(char key) {
+void Paddle::performAction(char) {
     // do nothing
 }
 

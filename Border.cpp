@@ -25,7 +25,7 @@ char Border::getSymbol() const {
     return '~';
 }
 
-void Border::performAction(char key) {
+void Border::performAction(char) {
     // do nothing
 }
 

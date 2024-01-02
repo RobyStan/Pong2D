@@ -31,6 +31,6 @@ void GameObject::update() {
     // do nothing
 }
 
-void GameObject::performAction(char key) {
+void GameObject::performAction(char) {
     // Default implementation, do nothing
 }

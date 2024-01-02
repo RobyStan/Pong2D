@@ -26,7 +26,7 @@ public:
 
     virtual int getY() const;
 
-    virtual void performAction(char key) = 0;
+    virtual void performAction(char) = 0;
 
     virtual GameObject *clone() const = 0;
 

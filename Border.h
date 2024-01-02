@@ -22,7 +22,7 @@ public:
 
     char getSymbol() const override;
 
-    void performAction(char key) override;
+    void performAction(char) override;
 
     GameObject *clone() const override;
 
