@@ -21,15 +21,8 @@ Game::Game(const Game &other)
           player2(other.player2),
           ball(other.ball),
           topAndBottomBorder(other.topAndBottomBorder) {
-    for (const GameObject *obj: other.gameObjects) {
-        std::transform(
-                other.gameObjects.begin(),
-                other.gameObjects.end(),
-                std::back_inserter(gameObjects),
-                [](const GameObject *obj) { return obj->clone(); }
-        );
-    }
 }
+
 
 Game &Game::operator=(Game &other) {
     std::swap(screenWidth, other.screenWidth);
