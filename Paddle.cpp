@@ -49,6 +49,6 @@ void Paddle::performAction(char) {
     // do nothing
 }
 
-[[maybe_unused]] GameObject *Paddle::clone() const {
+[[nodiscard]] GameObject *Paddle::clone() const {
     return new Paddle(*this);
 }
