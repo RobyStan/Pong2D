@@ -23,7 +23,6 @@ Game::Game(const Game &other)
           topAndBottomBorder(other.topAndBottomBorder) {
 }
 
-
 Game &Game::operator=(Game &other) {
     std::swap(screenWidth, other.screenWidth);
     std::swap(screenHeight, other.screenHeight);
