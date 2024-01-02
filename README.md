@@ -4,6 +4,7 @@
 ## Known Bugs
 ### Bug la Coliziuni în Colțuri
 - Dacă mingea ajunge fix în colț este imposibil de lovit
+- La viteze mari mingea poate trece prin paletă
 
 ### Tema 0
 
@@ -40,11 +41,12 @@
     - constructori virtuali (clone): sunt necesari, dar nu se consideră funcții specifice temei
   - [x] apelarea constructorului din clasa de bază din constructori din derivate
   - [ ] smart pointers (recomandat, opțional)
-  - [ ] `dynamic_cast`/`std::dynamic_pointer_cast` pentru downcast cu sens
-- [ ] suprascris cc/op= pentru copieri/atribuiri corecte, copy and swap
-- [ ] excepții
-  - [ ] ierarhie proprie cu baza `std::exception` sau derivată din `std::exception`; minim 2 clase pentru erori specifice
-  - [ ] utilizare cu sens: de exemplu, `throw` în constructor, `try`/`catch` în `main`
+  - [x] `dynamic_cast`/`std::dynamic_pointer_cast` pentru downcast cu sens
+- [x] suprascris cc/op= pentru copieri/atribuiri corecte, copy and swap
+- [x] excepții
+  - [x] ierarhie proprie cu baza `std::exception` sau derivată din `std::exception`; minim 2 clase pentru erori
+    specifice
+  - [x] utilizare cu sens: de exemplu, `throw` în constructor, `try`/`catch` în `main`
 - [ ] funcții și atribute `static`
 - [ ] STL
 - [ ] cât mai multe `const`

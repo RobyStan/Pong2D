@@ -45,6 +45,10 @@ char Paddle::getSymbol() const {
     return '|';
 }
 
-void Paddle::performAction() {
+void Paddle::performAction(char key) {
     // do nothing
+}
+
+GameObject *Paddle::clone() const {
+    return new Paddle(*this);
 }

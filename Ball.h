@@ -32,7 +32,9 @@ public:
 
     char getSymbol() const override;
 
-    void performAction() override;
+    void performAction(char key) override;
+
+    GameObject *clone() const override;
 
 };
 

@@ -100,7 +100,9 @@ add_executable(${PROJECT_NAME} main.cpp
         GameObject.h
         GameObject.cpp
         Border.cpp
-        Border.h)
+        Border.h
+        GameExceptions.cpp
+        GameExceptions.h)
 
 ###############################################################################
 

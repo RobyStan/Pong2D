@@ -25,6 +25,10 @@ char Border::getSymbol() const {
     return '~';
 }
 
-void Border::performAction() {
+void Border::performAction(char key) {
     // do nothing
+}
+
+GameObject *Border::clone() const {
+    return new Border(*this);
 }
