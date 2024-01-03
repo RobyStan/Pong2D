@@ -102,7 +102,9 @@ add_executable(${PROJECT_NAME} main.cpp
         Border.cpp
         Border.h
         GameExceptions.cpp
-        GameExceptions.h)
+        GameExceptions.h
+        PowerUp.cpp
+        PowerUp.h)
 
 ###############################################################################
 
