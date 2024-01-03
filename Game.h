@@ -1,5 +1,3 @@
-// Game.h
-
 #ifndef OOP_GAME_H
 #define OOP_GAME_H
 
@@ -11,7 +9,6 @@
 #include <vector>
 #include "GameExceptions.h"
 
-
 class Game {
 private:
     int screenWidth, screenHeight;
@@ -20,6 +17,8 @@ private:
     Ball ball;
     Border topAndBottomBorder;
     std::vector<GameObject *> gameObjects;
+    static int paddleHits;
+    static int borderHits;
 
 public:
     Game(int width, int height, const Border &topAndBottomBorder);
@@ -40,6 +39,12 @@ public:
     void renderBorder(int row);
     void renderGameElements(int row, int col);
     void render();
+
+    static int getPaddleHits();
+
+    static int getBorderHits();
+
+    static int getTotalHits();
 };
 
 #endif // OOP_GAME_H

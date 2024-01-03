@@ -1,6 +1,9 @@
 #include "Game.h"
 #include <algorithm>
 
+int Game::paddleHits = 0;
+int Game::borderHits = 0;
+
 Game::Game(int width, int height, const Border &topAndBottomBorder)
         : screenWidth(width), screenHeight(height),
           player1(1, height / 2 - 3, 2, 6),
@@ -49,10 +52,23 @@ Game::~Game() {
     }
 }
 
+int Game::getPaddleHits() {
+    return paddleHits;
+}
+
+int Game::getBorderHits() {
+    return borderHits;
+}
+
+int Game::getTotalHits() {
+    return paddleHits + borderHits;
+}
+
 void Game::handlePaddleCollisions(const Paddle &paddle, Ball &gameBall) {
     if (gameBall.getX() == paddle.getX() && gameBall.getY() >= paddle.getY() &&
         gameBall.getY() < paddle.getY() + paddle.getPaddleHeight()) {
         gameBall.reverseX();
+        paddleHits++;
     }
 }
 
@@ -111,6 +127,7 @@ void Game::run() {
 
             if (ball.isWithin(0, screenHeight - 1)) {
                 ball.reverseY();
+                borderHits++;
             }
 
             for (const GameObject *obj: gameObjects) {
@@ -171,7 +188,11 @@ void Game::renderGameElements(int row, int col) {
 void Game::render() {
     rlutil::msleep(40);
     rlutil::locate(1, 1);
-    std::cout << "Player 1 Score: " << getPlayer1Score() << " | Player 2 Score: " << getPlayer2Score() << std::endl;
+    std::cout << "Player 1 Score: " << getPlayer1Score()
+              << " | Player 2 Score: " << getPlayer2Score()
+              << " | Paddle Hits: " << getPaddleHits()
+              << " | Border Hits: " << getBorderHits()
+              << " | Total Hits: " << getTotalHits() << std::endl;
 
     for (int i = -1; i <= screenHeight; i++) {
         renderBorder(i);
