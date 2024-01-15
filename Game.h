@@ -13,8 +13,6 @@ class Game {
 private:
     int screenWidth, screenHeight;
     int player1Score{}, player2Score{};
-    Paddle player1, player2;
-    Ball ball;
     Border topAndBottomBorder;
     std::vector<GameObject *> gameObjects;
     static int paddleHits;
@@ -27,7 +25,7 @@ public:
 
     Game(const Game &other);
 
-    Game &operator=(Game &other);
+    Game &operator=(const Game &other);
 
     int getPlayer1Score() const { return player1Score; }
 

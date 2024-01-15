@@ -1,28 +1,28 @@
 #include "Game.h"
 #include <algorithm>
+#include <iostream>
 
 int Game::paddleHits = 0;
 int Game::borderHits = 0;
 
+Game::~Game() {
+    for (GameObject *obj : gameObjects) {
+        delete obj;
+    }
+}
+
 Game::Game(int width, int height, const Border &topAndBottomBorder)
-        : screenWidth(width), screenHeight(height),
-          player1(1, height / 2 - 3, 2, 6),
-          player2(width - 2, height / 2 - 3, 2, 6),
-          ball(width / 2, height / 2, 1, 1), topAndBottomBorder(topAndBottomBorder) {
-    gameObjects.push_back(&player1);
-    gameObjects.push_back(&player2);
-    gameObjects.push_back(&ball);
+        : screenWidth(width), screenHeight(height), topAndBottomBorder(topAndBottomBorder) {
+    gameObjects.push_back(new Paddle(1, height / 2 - 3, 2, 6));
+    gameObjects.push_back(new Paddle(width - 2, height / 2 - 3, 2, 6));
+    gameObjects.push_back(new Ball(width / 2, height / 2, 1, 1));
+
     rlutil::hidecursor();
 }
 
 Game::Game(const Game &other)
         : screenWidth(other.screenWidth),
           screenHeight(other.screenHeight),
-          player1Score(other.player1Score),
-          player2Score(other.player2Score),
-          player1(other.player1),
-          player2(other.player2),
-          ball(other.ball),
           topAndBottomBorder(other.topAndBottomBorder) {
     std::transform(
             other.gameObjects.begin(),
@@ -32,24 +32,26 @@ Game::Game(const Game &other)
     );
 }
 
-Game &Game::operator=(Game &other) {
-    std::swap(screenWidth, other.screenWidth);
-    std::swap(screenHeight, other.screenHeight);
-    std::swap(player1, other.player1);
-    std::swap(player2, other.player2);
-    std::swap(ball, other.ball);
-    std::swap(topAndBottomBorder, other.topAndBottomBorder);
-    std::swap(player1Score, other.player1Score);
-    std::swap(player2Score, other.player2Score);
-    std::swap(gameObjects, other.gameObjects);
+Game& Game::operator=(const Game &other) {
+    if (this != &other) {
+        screenWidth = other.screenWidth;
+        screenHeight = other.screenHeight;
+        topAndBottomBorder = other.topAndBottomBorder;
+        player1Score = other.player1Score;
+        player2Score = other.player2Score;
 
-    return *this;
-}
-
-Game::~Game() {
-    for (GameObject *obj: gameObjects) {
-        delete obj;
+        for (GameObject *obj : gameObjects) {
+            delete obj;
+        }
+        gameObjects.clear();
+                std::transform(
+                other.gameObjects.begin(),
+                other.gameObjects.end(),
+                std::back_inserter(gameObjects),
+                [](const GameObject *obj) { return obj->clone(); }
+        );
     }
+    return *this;
 }
 
 int Game::getPaddleHits() {
@@ -73,15 +75,13 @@ void Game::handlePaddleCollisions(const Paddle &paddle, Ball &gameBall) {
 }
 
 void Game::resetGame() {
+    for (GameObject *obj : gameObjects) {
+        delete obj;
+    }
     gameObjects.clear();
-
-    ball = Ball(screenWidth / 2, screenHeight / 2, 1, 1);
-    player1 = Paddle(1, screenHeight / 2 - 3, 2, 6);
-    player2 = Paddle(screenWidth - 2, screenHeight / 2 - 3, 2, 6);
-
-    gameObjects.push_back(&player1);
-    gameObjects.push_back(&player2);
-    gameObjects.push_back(&ball);
+    gameObjects.push_back(new Paddle(1, screenHeight / 2 - 3, 2, 6));
+    gameObjects.push_back(new Paddle(screenWidth - 2, screenHeight / 2 - 3, 2, 6));
+    gameObjects.push_back(new Ball(screenWidth / 2, screenHeight / 2, 1, 1));
 }
 
 void Game::run() {
@@ -91,55 +91,63 @@ void Game::run() {
             if (kbhit()) {
                 int key = std::tolower(rlutil::getkey());
                 if (key == 'w') {
-                    player1.moveUp();
+                    dynamic_cast<Paddle *>(gameObjects[0])->moveUp();
                 }
                 if (key == 's') {
-                    player1.moveDown(screenHeight);
+                    dynamic_cast<Paddle *>(gameObjects[0])->moveDown(screenHeight);
                 }
                 if (key == 'i') {
-                    player2.moveUp();
+                    dynamic_cast<Paddle *>(gameObjects[1])->moveUp();
                 }
                 if (key == 'j') {
-                    player2.moveDown(screenHeight);
+                    dynamic_cast<Paddle *>(gameObjects[1])->moveDown(screenHeight);
                 }
                 if (key == 'q') {
                     throw GameOverException("User quit the game.\n");
                 }
                 if (key == '=') {
                     try {
-                        ball.performAction('=');
+                        dynamic_cast<Ball *>(gameObjects[2])->performAction('=');
                     } catch (const std::exception &ex) {
                         std::cerr << "Error performing action on Ball: " << ex.what() << std::endl;
                     }
                 }
                 if (key == '-') {
                     try {
-                        ball.performAction('-');
+                        dynamic_cast<Ball *>(gameObjects[2])->performAction('-');
                     } catch (const std::exception &ex) {
                         std::cerr << "Error performing action on Ball: " << ex.what() << std::endl;
                     }
                 }
-            }
-
-            for (GameObject *obj: gameObjects) {
-                obj->update();
-            }
-
-            if (ball.isWithin(0, screenHeight - 1)) {
-                ball.reverseY();
-                borderHits++;
-            }
-
-            for (const GameObject *obj: gameObjects) {
-                if (const auto *paddle = dynamic_cast<const Paddle *>(obj)) {
-                    handlePaddleCollisions(*paddle, ball);
+                if (key == 'm') {
+                    dynamic_cast<Paddle *>(gameObjects[0])->performAction(key);
+                    dynamic_cast<Paddle *>(gameObjects[1])->performAction(key);
+                }
+                if (key == 'n') {
+                    dynamic_cast<Paddle *>(gameObjects[0])->performAction(key);
+                    dynamic_cast<Paddle *>(gameObjects[1])->performAction(key);
                 }
             }
 
-            if (ball.getX() < 0) {
+            for (GameObject *obj : gameObjects) {
+                obj->update();
+            }
+
+            if (dynamic_cast<Ball *>(gameObjects[2])->isWithin(0, screenHeight - 1)) {
+                dynamic_cast<Ball *>(gameObjects[2])->reverseY();
+                borderHits++;
+            }
+
+            for (const GameObject *obj : gameObjects) {
+                if (const auto *paddle = dynamic_cast<const Paddle *>(obj)) {
+                    handlePaddleCollisions(*paddle, *dynamic_cast<Ball *>(gameObjects[2]));
+                }
+            }
+
+            if (dynamic_cast<Ball *>(gameObjects[2])->getX() < 0) {
                 player2Score++;
                 resetGame();
-            } else if (ball.getX() >= screenWidth) {
+            } else if (dynamic_cast<Ball *>(gameObjects[2])->getX() >= screenWidth) {
                 player1Score++;
                 resetGame();
             }
@@ -159,7 +167,6 @@ void Game::run() {
     }
 }
 
-
 void Game::renderBorder(int row) {
     for (int j = 0; j < screenWidth + 1; j++) {
         if (row == -1 || row == screenHeight) {
@@ -172,21 +179,29 @@ void Game::renderBorder(int row) {
 }
 
 void Game::renderGameElements(int row, int col) {
-    if ((col == player1.getX() || col == player1.getX() + player1.getPaddleWidth() - 1) &&
-        (row >= player1.getY() && row < player1.getY() + player1.getPaddleHeight())) {
-        std::cout << player1.getSymbol();
-    } else if ((col == player2.getX() || col == player2.getX() + player2.getPaddleWidth() - 1) &&
-               (row >= player2.getY() && row < player2.getY() + player2.getPaddleHeight())) {
-        std::cout << player2.getSymbol();
-    } else if (col == ball.getX() && row == ball.getY()) {
-        std::cout << ball.getSymbol();
+    if ((col == dynamic_cast<Paddle *>(gameObjects[0])->getX() ||
+         col == dynamic_cast<Paddle *>(gameObjects[0])->getX() +
+                dynamic_cast<Paddle *>(gameObjects[0])->getPaddleWidth() - 1) &&
+        (row >= dynamic_cast<Paddle *>(gameObjects[0])->getY() &&
+         row < dynamic_cast<Paddle *>(gameObjects[0])->getY() +
+               dynamic_cast<Paddle *>(gameObjects[0])->getPaddleHeight())) {
+        std::cout << dynamic_cast<Paddle *>(gameObjects[0])->getSymbol();
+    } else if ((col == dynamic_cast<Paddle *>(gameObjects[1])->getX() ||
+                col == dynamic_cast<Paddle *>(gameObjects[1])->getX() +
+                       dynamic_cast<Paddle *>(gameObjects[1])->getPaddleWidth() - 1) &&
+               (row >= dynamic_cast<Paddle *>(gameObjects[1])->getY() &&
+                row < dynamic_cast<Paddle *>(gameObjects[1])->getY() +
+                      dynamic_cast<Paddle *>(gameObjects[1])->getPaddleHeight())) {
+        std::cout << dynamic_cast<Paddle *>(gameObjects[1])->getSymbol();
+    } else if (col == dynamic_cast<Ball *>(gameObjects[2])->getX() &&
+               row == dynamic_cast<Ball *>(gameObjects[2])->getY()) {
+        std::cout << dynamic_cast<Ball *>(gameObjects[2])->getSymbol();
     } else {
         std::cout << " ";
     }
 }
 
 void Game::render() {
-    rlutil::msleep(40);
     rlutil::locate(1, 1);
     std::cout << "Player 1 Score: " << getPlayer1Score()
               << " | Player 2 Score: " << getPlayer2Score()
