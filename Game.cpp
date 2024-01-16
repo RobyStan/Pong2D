@@ -32,6 +32,7 @@ Game::Game(const Game &other)
     );
 }
 
+// cppcheck-suppress operatorEqRetRefThis
 Game& Game::operator=(const Game &other) {
     if (this != &other) {
         screenWidth = other.screenWidth;
@@ -44,7 +45,7 @@ Game& Game::operator=(const Game &other) {
             delete obj;
         }
         gameObjects.clear();
-                std::transform(
+        std::transform(
                 other.gameObjects.begin(),
                 other.gameObjects.end(),
                 std::back_inserter(gameObjects),
@@ -202,6 +203,7 @@ void Game::renderGameElements(int row, int col) {
 }
 
 void Game::render() {
+    rlutil::msleep(40);
     rlutil::locate(1, 1);
     std::cout << "Player 1 Score: " << getPlayer1Score()
               << " | Player 2 Score: " << getPlayer2Score()
