@@ -34,6 +34,7 @@ Game::Game(const Game &other)
     );
 }
 
+// cppcheck-suppress operatorEqRetRefThis
 Game& Game::operator=(const Game &other) {
     if (this != &other) {
         screenWidth = other.screenWidth;
