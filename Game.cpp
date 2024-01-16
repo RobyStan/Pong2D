@@ -16,6 +16,8 @@ Game::Game(int width, int height, const Border &topAndBottomBorder)
     gameObjects.push_back(new Paddle(1, height / 2 - 3, 2, 6));
     gameObjects.push_back(new Paddle(width - 2, height / 2 - 3, 2, 6));
     gameObjects.push_back(new Ball(width / 2, height / 2, 1, 1));
+    gameObjects.push_back(new MiddleWall(screenWidth / 2, screenHeight / 2 - 9, 2, screenHeight/5));
+    gameObjects.push_back(new MiddleWall(screenWidth / 2, screenHeight / 2 + 6,2,screenHeight/5));
 
     rlutil::hidecursor();
 }
@@ -32,7 +34,6 @@ Game::Game(const Game &other)
     );
 }
 
-// cppcheck-suppress operatorEqRetRefThis
 Game& Game::operator=(const Game &other) {
     if (this != &other) {
         screenWidth = other.screenWidth;
@@ -67,22 +68,32 @@ int Game::getTotalHits() {
     return paddleHits + borderHits;
 }
 
-void Game::handlePaddleCollisions(const Paddle &paddle, Ball &gameBall) {
+void Game::handleCollisions(const Paddle &paddle, Ball &gameBall) {
     if (gameBall.getX() == paddle.getX() && gameBall.getY() >= paddle.getY() &&
         gameBall.getY() < paddle.getY() + paddle.getPaddleHeight()) {
         gameBall.reverseX();
         paddleHits++;
+    } else {
+        for (const GameObject *obj : gameObjects) {
+            if (const auto *middleWall = dynamic_cast<const MiddleWall *>(obj)) {
+                if (gameBall.checkWallCollision(*middleWall)) {
+                    gameBall.reverseX();
+                }
+            }
+        }
     }
 }
 
 void Game::resetGame() {
-    for (GameObject *obj : gameObjects) {
+    for (GameObject *obj: gameObjects) {
         delete obj;
     }
     gameObjects.clear();
     gameObjects.push_back(new Paddle(1, screenHeight / 2 - 3, 2, 6));
     gameObjects.push_back(new Paddle(screenWidth - 2, screenHeight / 2 - 3, 2, 6));
     gameObjects.push_back(new Ball(screenWidth / 2, screenHeight / 2, 1, 1));
+    gameObjects.push_back(new MiddleWall(screenWidth / 2, screenHeight / 2 - 9, 2, screenHeight / 5));
+    gameObjects.push_back(new MiddleWall(screenWidth / 2, screenHeight / 2 + 6, 2, screenHeight / 5));
 }
 
 void Game::run() {
@@ -141,7 +152,7 @@ void Game::run() {
 
             for (const GameObject *obj : gameObjects) {
                 if (const auto *paddle = dynamic_cast<const Paddle *>(obj)) {
-                    handlePaddleCollisions(*paddle, *dynamic_cast<Ball *>(gameObjects[2]));
+                    handleCollisions(*paddle, *dynamic_cast<Ball *>(gameObjects[2]));
                 }
             }
 
@@ -180,6 +191,18 @@ void Game::renderBorder(int row) {
 }
 
 void Game::renderGameElements(int row, int col) {
+    for (const GameObject *obj : gameObjects) {
+        if (const auto *middleWall = dynamic_cast<const MiddleWall *>(obj)) {
+            if (col >= middleWall->getX() &&
+                col < middleWall->getX() + middleWall->getWidth() &&
+                row >= middleWall->getY() &&
+                row < middleWall->getY() + middleWall->getHeight()) {
+                std::cout << middleWall->getSymbol();
+                return;
+            }
+        }
+    }
+
     if ((col == dynamic_cast<Paddle *>(gameObjects[0])->getX() ||
          col == dynamic_cast<Paddle *>(gameObjects[0])->getX() +
                 dynamic_cast<Paddle *>(gameObjects[0])->getPaddleWidth() - 1) &&

@@ -8,6 +8,7 @@
 #include "rlutil.h"
 #include <vector>
 #include "GameExceptions.h"
+#include "MiddleWall.h"
 
 class Game {
 private:
@@ -31,7 +32,7 @@ public:
 
     int getPlayer2Score() const { return player2Score; }
 
-    static void handlePaddleCollisions(const Paddle &paddle, Ball &gameBall);
+    void handleCollisions(const Paddle &paddle, Ball &gameBall);
     void resetGame();
     void run();
     void renderBorder(int row);

@@ -68,5 +68,8 @@ GameObject *Ball::clone() const {
     return new Ball(*this);
 }
 
-
+bool Ball::checkWallCollision(const MiddleWall &wall) const {
+    return (x >= wall.getX() && x < wall.getX() + wall.getWidth()) &&
+           (y >= wall.getY() && y < wall.getY() + wall.getHeight());
+}
 

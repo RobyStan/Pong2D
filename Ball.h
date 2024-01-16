@@ -6,6 +6,7 @@
 #define OOP_BALL_H
 
 #include "GameObject.h"
+#include "MiddleWall.h"
 
 class Ball : public GameObject
 {
@@ -36,6 +37,7 @@ public:
 
     GameObject *clone() const override;
 
+    bool checkWallCollision(const MiddleWall &wall) const;
 };
 
 #endif //OOP_BALL_H

@@ -5,6 +5,7 @@
 ### Bug la Coliziuni în Colțuri
 - Dacă mingea ajunge fix în colț este imposibil de lovit
 - La viteze mari mingea poate trece prin paletă
+- Mingea trece prin pereții din mijloc
 
 ### Tema 0
 

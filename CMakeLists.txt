@@ -103,8 +103,8 @@ add_executable(${PROJECT_NAME} main.cpp
         Border.h
         GameExceptions.cpp
         GameExceptions.h
-        PowerUp.cpp
-        PowerUp.h)
+        MiddleWall.cpp
+        MiddleWall.h)
 
 ###############################################################################
 
