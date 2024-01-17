@@ -1,27 +1,27 @@
 #include "MiddleWall.h"
+#include "rlutil.h"
 
 MiddleWall::MiddleWall(int startX, int startY, int width, int height)
-        : GameObject(startX, startY), width(width), height(height) {}
+        : GameObject(startX, startY), width(width), height(height), direction(1) {}
 
 MiddleWall::MiddleWall(const MiddleWall &other)
-        : GameObject(other), width(other.width), height(other.height) {}
+        : GameObject(other), width(other.width), height(other.height), direction(other.direction) {}
 
 MiddleWall &MiddleWall::operator=(const MiddleWall &other) {
     if (this != &other) {
         GameObject::operator=(other);
         width = other.width;
         height = other.height;
+        direction = other.direction;
     }
     return *this;
 }
+
 MiddleWall::~MiddleWall() {}
+
 
 char MiddleWall::getSymbol() const {
     return '#';
-}
-
-void MiddleWall::performAction(char) {
-   // do nothing for now
 }
 
 GameObject *MiddleWall::clone() const {
@@ -35,3 +35,21 @@ int MiddleWall::getWidth() const {
 int MiddleWall::getHeight() const {
     return height;
 }
+
+void MiddleWall::performAction(char key) {
+
+    if (key == 'm') {
+        y--;
+    }
+    if (key == 'n') {
+        y++;
+    }
+}
+
+//char MiddleWall::updatePosition(char key) {
+//    if (key == 'm') {
+//        return 'n';
+//    } else if (key == 'n') {
+//        return 'm';
+//    }
+//}

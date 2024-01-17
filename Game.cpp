@@ -1,6 +1,7 @@
 #include "Game.h"
 #include <algorithm>
 #include <iostream>
+#include <chrono>
 
 int Game::paddleHits = 0;
 int Game::borderHits = 0;
@@ -13,8 +14,8 @@ Game::~Game() {
 
 Game::Game(int width, int height, const Border &topAndBottomBorder)
         : screenWidth(width), screenHeight(height), topAndBottomBorder(topAndBottomBorder) {
-    gameObjects.push_back(new Paddle(1, height / 2 - 3, 2, 6));
-    gameObjects.push_back(new Paddle(width - 2, height / 2 - 3, 2, 6));
+    gameObjects.push_back(new Paddle(1, height / 2 - 3, 2, 6, '1'));
+    gameObjects.push_back(new Paddle(width - 2, height / 2 - 3, 2, 6, '2'));
     gameObjects.push_back(new Ball(width / 2, height / 2, 1, 1));
     gameObjects.push_back(new MiddleWall(screenWidth / 2, screenHeight / 2 - 9, 2, screenHeight/5));
     gameObjects.push_back(new MiddleWall(screenWidth / 2, screenHeight / 2 + 6,2,screenHeight/5));
@@ -90,8 +91,8 @@ void Game::resetGame() {
         delete obj;
     }
     gameObjects.clear();
-    gameObjects.push_back(new Paddle(1, screenHeight / 2 - 3, 2, 6));
-    gameObjects.push_back(new Paddle(screenWidth - 2, screenHeight / 2 - 3, 2, 6));
+    gameObjects.push_back(new Paddle(1, screenHeight / 2 - 3, 2, 6, '1'));
+    gameObjects.push_back(new Paddle(screenWidth - 2, screenHeight / 2 - 3, 2, 6, '2'));
     gameObjects.push_back(new Ball(screenWidth / 2, screenHeight / 2, 1, 1));
     gameObjects.push_back(new MiddleWall(screenWidth / 2, screenHeight / 2 - 9, 2, screenHeight / 5));
     gameObjects.push_back(new MiddleWall(screenWidth / 2, screenHeight / 2 + 6, 2, screenHeight / 5));
@@ -100,67 +101,61 @@ void Game::resetGame() {
 void Game::run() {
     try {
         resetGame();
+
+        auto lastWallMoveTime = std::chrono::high_resolution_clock::now();
+
         while (true) {
             if (kbhit()) {
                 int key = std::tolower(rlutil::getkey());
-                if (key == 'w') {
-                    dynamic_cast<Paddle *>(gameObjects[0])->moveUp();
-                }
-                if (key == 's') {
-                    dynamic_cast<Paddle *>(gameObjects[0])->moveDown(screenHeight);
-                }
-                if (key == 'i') {
-                    dynamic_cast<Paddle *>(gameObjects[1])->moveUp();
-                }
-                if (key == 'j') {
-                    dynamic_cast<Paddle *>(gameObjects[1])->moveDown(screenHeight);
+                for (auto obj: gameObjects) {
+                    obj->performAction(key);
                 }
                 if (key == 'q') {
                     throw GameOverException("User quit the game.\n");
                 }
-                if (key == '=') {
-                    try {
-                        dynamic_cast<Ball *>(gameObjects[2])->performAction('=');
-                    } catch (const std::exception &ex) {
-                        std::cerr << "Error performing action on Ball: " << ex.what() << std::endl;
-                    }
-                }
-                if (key == '-') {
-                    try {
-                        dynamic_cast<Ball *>(gameObjects[2])->performAction('-');
-                    } catch (const std::exception &ex) {
-                        std::cerr << "Error performing action on Ball: " << ex.what() << std::endl;
-                    }
-                }
-                if (key == 'm') {
-                    dynamic_cast<Paddle *>(gameObjects[0])->performAction(key);
-                    dynamic_cast<Paddle *>(gameObjects[1])->performAction(key);
-                }
-                if (key == 'n') {
-                    dynamic_cast<Paddle *>(gameObjects[0])->performAction(key);
-                    dynamic_cast<Paddle *>(gameObjects[1])->performAction(key);
-                }
             }
 
-            for (GameObject *obj : gameObjects) {
+            for (GameObject *obj: gameObjects) {
                 obj->update();
             }
 
-            if (dynamic_cast<Ball *>(gameObjects[2])->isWithin(0, screenHeight - 1)) {
-                dynamic_cast<Ball *>(gameObjects[2])->reverseY();
+            auto ball = dynamic_cast<Ball *>(gameObjects[2]);
+            if (ball && ball->isWithin(0, screenHeight - 1)) {
+                ball->reverseY();
                 borderHits++;
             }
 
-            for (const GameObject *obj : gameObjects) {
+            for (const GameObject *obj: gameObjects) {
                 if (const auto *paddle = dynamic_cast<const Paddle *>(obj)) {
-                    handleCollisions(*paddle, *dynamic_cast<Ball *>(gameObjects[2]));
+                    handleCollisions(*paddle, *ball);
                 }
-            }
+                }
 
-            if (dynamic_cast<Ball *>(gameObjects[2])->getX() < 0) {
+//                auto currentTime = std::chrono::high_resolution_clock::now();
+//                auto wallElapsedTime = std::chrono::duration_cast<std::chrono::seconds>(currentTime - lastWallMoveTime).count();
+//
+//                for (auto obj : gameObjects) {
+//                    if (auto middleWall = dynamic_cast<MiddleWall*>(obj)) {
+//                        middleWall->updatePosition('m');
+//                    }
+//                }
+//                        if (wallElapsedTime >= 2) {
+//                    for (auto obj : gameObjects) {
+//                        if (auto middleWall = dynamic_cast<MiddleWall*>(obj)) {
+//                            middleWall->performAction(middleWall->updatePosition('m'));
+//                            middleWall->updatePosition();
+//                        }
+//                    }
+//
+//                    lastWallMoveTime = std::chrono::high_resolution_clock::now();
+//                }
+
+//  Peretii din mijloc se vor misca singur in sus si in jos 1 singur spatiu la un interval de 2 secunde
+
+            if (ball->getX() < 0) {
                 player2Score++;
                 resetGame();
-            } else if (dynamic_cast<Ball *>(gameObjects[2])->getX() >= screenWidth) {
+            } else if (ball->getX() >= screenWidth) {
                 player1Score++;
                 resetGame();
             }
@@ -192,8 +187,9 @@ void Game::renderBorder(int row) {
 }
 
 void Game::renderGameElements(int row, int col) {
-    for (const GameObject *obj : gameObjects) {
-        if (const auto *middleWall = dynamic_cast<const MiddleWall *>(obj)) {
+    for (const auto *obj: gameObjects) {
+        if (obj->getSymbol() == '#') {
+            auto middleWall = dynamic_cast<const MiddleWall *>(obj);
             if (col >= middleWall->getX() &&
                 col < middleWall->getX() + middleWall->getWidth() &&
                 row >= middleWall->getY() &&
@@ -204,26 +200,26 @@ void Game::renderGameElements(int row, int col) {
         }
     }
 
-    if ((col == dynamic_cast<Paddle *>(gameObjects[0])->getX() ||
-         col == dynamic_cast<Paddle *>(gameObjects[0])->getX() +
-                dynamic_cast<Paddle *>(gameObjects[0])->getPaddleWidth() - 1) &&
-        (row >= dynamic_cast<Paddle *>(gameObjects[0])->getY() &&
-         row < dynamic_cast<Paddle *>(gameObjects[0])->getY() +
-               dynamic_cast<Paddle *>(gameObjects[0])->getPaddleHeight())) {
-        std::cout << dynamic_cast<Paddle *>(gameObjects[0])->getSymbol();
-    } else if ((col == dynamic_cast<Paddle *>(gameObjects[1])->getX() ||
-                col == dynamic_cast<Paddle *>(gameObjects[1])->getX() +
-                       dynamic_cast<Paddle *>(gameObjects[1])->getPaddleWidth() - 1) &&
-               (row >= dynamic_cast<Paddle *>(gameObjects[1])->getY() &&
-                row < dynamic_cast<Paddle *>(gameObjects[1])->getY() +
-                      dynamic_cast<Paddle *>(gameObjects[1])->getPaddleHeight())) {
-        std::cout << dynamic_cast<Paddle *>(gameObjects[1])->getSymbol();
-    } else if (col == dynamic_cast<Ball *>(gameObjects[2])->getX() &&
-               row == dynamic_cast<Ball *>(gameObjects[2])->getY()) {
-        std::cout << dynamic_cast<Ball *>(gameObjects[2])->getSymbol();
-    } else {
-        std::cout << " ";
+    for (const auto *obj: gameObjects) {
+        if (obj->getSymbol() == '|') {
+            auto paddle = dynamic_cast<const Paddle *>(obj);
+            if ((col == paddle->getX() ||
+                 col == paddle->getX() + paddle->getPaddleWidth() - 1) &&
+                (row >= paddle->getY() &&
+                 row < paddle->getY() + paddle->getPaddleHeight())) {
+                std::cout << paddle->getSymbol();
+                return;
+            }
+        } else if (obj->getSymbol() == 'O') {
+            auto ball = dynamic_cast<const Ball *>(obj);
+            if (col == ball->getX() && row == ball->getY()) {
+                std::cout << ball->getSymbol();
+                return;
+            }
+        }
     }
+
+    std::cout << " ";
 }
 
 void Game::render() {

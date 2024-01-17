@@ -15,7 +15,7 @@ void instructions()
     std::cout << "Player 1 (left): w -> go up / s -> go down"<<std::endl;
     std::cout << "Player 2 (right): i -> go up / j -> go down"<<std::endl;
     std::cout << "Increase/Decrease ball speed: + / -" << std::endl;
-    std::cout << "Increase/Decrease paddle heigth: m / n "<<std::endl;
+    std::cout << "Move Up/Down the middlewalls: m / n" << std::endl;
     std::cout << "First to get 5 points wins!" << std::endl;
     std::cout << "Enter option: ";
     rlutil::hidecursor();

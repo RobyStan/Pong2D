@@ -6,6 +6,7 @@
 class MiddleWall : public GameObject {
 private:
     int width, height;
+    int direction;
 
 public:
     MiddleWall(int startX, int startY, int width, int height);
@@ -25,6 +26,8 @@ public:
     int getWidth()const;
 
     int getHeight() const;
+
+    char updatePosition(char key);
 };
 
 #endif //OOP_MIDDLEWALL_H

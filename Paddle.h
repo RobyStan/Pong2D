@@ -11,9 +11,10 @@ class Paddle : public GameObject
 {
 private:
     int width, height;
+    char player;
 
 public:
-    Paddle(int startX, int startY, int paddleWidth, int paddleHeight);
+    Paddle(int startX, int startY, int paddleWidth, int paddleHeight, char player);
 
     Paddle(const Paddle& other);
 

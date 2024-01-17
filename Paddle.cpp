@@ -5,11 +5,11 @@
 #include "Paddle.h"
 #include "rlutil.h"
 
-Paddle::Paddle(int startX, int startY, int paddleWidth, int paddleHeight)
-        : GameObject(startX, startY), width(paddleWidth), height(paddleHeight) {}
+Paddle::Paddle(int startX, int startY, int paddleWidth, int paddleHeight, char player)
+        : GameObject(startX, startY), width(paddleWidth), height(paddleHeight), player(player) {}
 
 Paddle::Paddle(const Paddle &other)
-        : GameObject(other), width(other.width), height(other.height) {}
+        : GameObject(other), width(other.width), height(other.height), player(other.player) {}
 
 Paddle::~Paddle() {}
 
@@ -18,6 +18,7 @@ Paddle &Paddle::operator=(const Paddle &other) {
         GameObject::operator=(other);
         width = other.width;
         height = other.height;
+        player = other.player;
     }
     return *this;
 }
@@ -47,17 +48,19 @@ char Paddle::getSymbol() const {
 }
 
 void Paddle::performAction(char key) {
-    int screenHeight = rlutil::trows();
-
-    if (key == 'm') {
-        if (y > 0 && height + 2 <= screenHeight / 2) {
-            y--;
-            height += 2;
+    if (player == '1') {
+        if (key == 'w') {
+            moveUp();
         }
-    } else if (key == 'n') {
-        if (height > 2) {
-            y++;
-            height -= 2;
+        if (key == 's') {
+            moveDown(rlutil::trows());
+        }
+    } else if (player == '2') {
+        if (key == 'i') {
+            moveUp();
+        }
+        if (key == 'j') {
+            moveDown(rlutil::trows());
         }
     }
 }
