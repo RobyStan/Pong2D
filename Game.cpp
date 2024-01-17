@@ -102,7 +102,7 @@ void Game::run() {
     try {
         resetGame();
 
-        auto lastWallMoveTime = std::chrono::high_resolution_clock::now();
+        //  auto lastWallMoveTime = std::chrono::high_resolution_clock::now();
 
         while (true) {
             if (kbhit()) {
