@@ -2,6 +2,8 @@
 // Created by Roby on 12/27/2023.
 //
 
+
+
 #include "Border.h"
 
 Border::Border(int startX, int startY, int width, int height)
@@ -33,6 +35,6 @@ GameObject *Border::clone() const {
     return new Border(*this);
 }
 
-bool Border::shouldDraw(int row, int col) const {
+bool Border::shouldDraw(int row, [[maybe_unused]] int col) const {
     return (row == -1 || row == screenHeight);
 }
