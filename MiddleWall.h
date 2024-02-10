@@ -28,6 +28,9 @@ public:
     int getHeight() const;
 
     char updatePosition(char key);
+
+    bool shouldDraw(int row, int col) const override;
+
 };
 
 #endif //OOP_MIDDLEWALL_H

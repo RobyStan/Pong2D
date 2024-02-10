@@ -115,7 +115,7 @@ void Game::run() {
                 }
             }
 
-            for (GameObject *obj: gameObjects) {
+            for (auto obj: gameObjects) {
                 obj->update();
             }
 
@@ -125,8 +125,8 @@ void Game::run() {
                 borderHits++;
             }
 
-            for (const GameObject *obj: gameObjects) {
-                if (const auto *paddle = dynamic_cast<const Paddle *>(obj)) {
+            for (auto obj: gameObjects) {
+                if (auto *paddle = dynamic_cast<const Paddle *>(obj)) {
                     handleCollisions(*paddle, *ball);
                 }
                 }
@@ -187,36 +187,12 @@ void Game::renderBorder(int row) {
 }
 
 void Game::renderGameElements(int row, int col) {
-    for (const auto *obj: gameObjects) {
-        if (obj->getSymbol() == '#') {
-            auto middleWall = dynamic_cast<const MiddleWall *>(obj);
-            if (col >= middleWall->getX() &&
-                col < middleWall->getX() + middleWall->getWidth() &&
-                row >= middleWall->getY() &&
-                row < middleWall->getY() + middleWall->getHeight()) {
-                std::cout << middleWall->getSymbol();
-                return;
-            }
-        }
-    }
+    auto it = std::find_if(gameObjects.begin(), gameObjects.end(),
+                           [&](const GameObject *obj) { return obj->shouldDraw(row, col); });
 
-    for (const auto *obj: gameObjects) {
-        if (obj->getSymbol() == '|') {
-            auto paddle = dynamic_cast<const Paddle *>(obj);
-            if ((col == paddle->getX() ||
-                 col == paddle->getX() + paddle->getPaddleWidth() - 1) &&
-                (row >= paddle->getY() &&
-                 row < paddle->getY() + paddle->getPaddleHeight())) {
-                std::cout << paddle->getSymbol();
-                return;
-            }
-        } else if (obj->getSymbol() == 'O') {
-            auto ball = dynamic_cast<const Ball *>(obj);
-            if (col == ball->getX() && row == ball->getY()) {
-                std::cout << ball->getSymbol();
-                return;
-            }
-        }
+    if (it != gameObjects.end()) {
+        std::cout << (*it)->getSymbol();
+        return;
     }
 
     std::cout << " ";

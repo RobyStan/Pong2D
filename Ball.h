@@ -38,6 +38,8 @@ public:
     GameObject *clone() const override;
 
     bool checkWallCollision(const MiddleWall &wall) const;
+
+    bool shouldDraw(int row, int col) const override;
 };
 
 #endif //OOP_BALL_H

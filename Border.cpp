@@ -19,7 +19,7 @@ Border &Border::operator=(const Border &other) {
     return *this;
 }
 
-Border::~Border() {};
+Border::~Border() {}
 
 char Border::getSymbol() const {
     return '~';
@@ -31,4 +31,8 @@ void Border::performAction(char) {
 
 GameObject *Border::clone() const {
     return new Border(*this);
+}
+
+bool Border::shouldDraw(int row, int col) const {
+    return (row == -1 || row == screenHeight);
 }

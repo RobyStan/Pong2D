@@ -46,6 +46,11 @@ void MiddleWall::performAction(char key) {
     }
 }
 
+bool MiddleWall::shouldDraw(int row, int col) const {
+    return col >= getX() && col < getX() + getWidth() &&
+           row >= getY() && row < getY() + getHeight();
+}
+
 //char MiddleWall::updatePosition(char key) {
 //    if (key == 'm') {
 //        return 'n';

@@ -73,3 +73,7 @@ bool Ball::checkWallCollision(const MiddleWall &wall) const {
            (y >= wall.getY() && y < wall.getY() + wall.getHeight());
 }
 
+bool Ball::shouldDraw(int row, int col) const {
+    return col == getX() && row == getY();
+}
+

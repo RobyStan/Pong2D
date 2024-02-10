@@ -26,6 +26,8 @@ public:
 
     GameObject *clone() const override;
 
+    bool shouldDraw(int row, int col) const override;
+
 };
 
 #endif //OOP_BORDER_H

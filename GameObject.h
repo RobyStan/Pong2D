@@ -28,6 +28,8 @@ public:
 
     virtual void performAction(char) = 0;
 
+    virtual bool shouldDraw(int row, int col) const = 0;
+
     virtual GameObject *clone() const = 0;
 
 };

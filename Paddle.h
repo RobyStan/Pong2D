@@ -34,6 +34,8 @@ public:
 
     void performAction(char) override;
 
+    bool shouldDraw(int row, int col) const override;
+
     GameObject *clone() const override;
 
 };

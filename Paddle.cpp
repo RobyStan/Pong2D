@@ -65,6 +65,11 @@ void Paddle::performAction(char key) {
     }
 }
 
+bool Paddle::shouldDraw(int row, int col) const {
+    return (col == getX() || col == getX() + getPaddleWidth() - 1) &&
+           (row >= getY() && row < getY() + getPaddleHeight());
+}
+
 GameObject *Paddle::clone() const {
     return new Paddle(*this);
 }
